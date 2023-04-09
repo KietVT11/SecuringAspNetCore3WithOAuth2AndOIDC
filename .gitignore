@@ -6,3 +6,8 @@
 /Starter files/src/ImageGallery.API/obj
 /Starter files/src/ImageGallery.Client/obj
 /Starter files/src/ImageGallery.Model/obj
+/Starter files/src/Marvin.IDP/obj
+/Starter files/src/ImageGallery.API/bin/Debug/netcoreapp3.1
+/Starter files/src/ImageGallery.Client/bin/Debug/netcoreapp3.1
+/Starter files/src/ImageGallery.Model/bin/Debug/netstandard2.0
+/Starter files/src/Marvin.IDP/bin/Debug/net6.0
