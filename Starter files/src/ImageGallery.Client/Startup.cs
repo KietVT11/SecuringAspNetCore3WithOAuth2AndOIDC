@@ -49,7 +49,14 @@ namespace ImageGallery.Client
                 //options.Scope.Add("openid");
                 //options.Scope.Add("profile");
                 //options.CallbackPath = new PathString("signin-oidc");
+                // SignedOutCallbackPath: default = host:port/signout-callback-oidc.
+                // Must match with the post logout redirect URI at IDP client config if
+                // you want to automatically return to the application after logging out
+                // of IdentityServer.
+                // To change, set SignedOutCallbackPath
+                // eg: options.SignedOutCallbackPath = new PathString("pathaftersignout");
                 options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
             });
         }
 
