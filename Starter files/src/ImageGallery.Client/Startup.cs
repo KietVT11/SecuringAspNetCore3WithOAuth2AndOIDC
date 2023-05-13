@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json.Serialization;
 
 namespace ImageGallery.Client
@@ -25,10 +27,12 @@ namespace ImageGallery.Client
                      opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                  });
 
-			// create an HttpClient used for accessing the API
-			services.AddHttpClient("APIClient", client =>
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            // create an HttpClient used for accessing the API
+            services.AddHttpClient("APIClient", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44366/");
+                client.BaseAddress = new Uri(Configuration["ImageGalleryAPIRoot"]);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             });
@@ -57,6 +61,16 @@ namespace ImageGallery.Client
                 // eg: options.SignedOutCallbackPath = new PathString("pathaftersignout");
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
+                options.ClaimActions.Remove("aud");
+                options.ClaimActions.DeleteClaim("sid");
+                options.ClaimActions.DeleteClaim("idp");
+                options.Scope.Add("roles");
+                options.ClaimActions.MapJsonKey("role", "role");
+                options.TokenValidationParameters = new()
+                {
+                    NameClaimType = "given_name",
+                    RoleClaimType = "role",
+                };
             });
         }
 
