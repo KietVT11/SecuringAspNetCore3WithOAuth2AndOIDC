@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ImageGallery.API.Entities;
 using ImageGallery.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ImageGallery.API
 {
-    public class Startup
+	public class Startup
     {
         public IConfiguration Configuration { get; }
 
@@ -43,6 +44,21 @@ namespace ImageGallery.API
             // register AutoMapper-related services
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = "https://localhost:5001";
+                    options.Audience = "imagegalleryapi";
+                    options.TokenValidationParameters = new()
+                    {
+                        NameClaimType = "given_name",
+                        RoleClaimType = "role",
+                        ValidTypes = new [] { "at+jwt" }
+					};
+				});
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +87,8 @@ namespace ImageGallery.API
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseRouting(); 
 

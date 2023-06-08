@@ -65,6 +65,7 @@ namespace ImageGallery.Client
                 options.ClaimActions.DeleteClaim("sid");
                 options.ClaimActions.DeleteClaim("idp");
                 options.Scope.Add("roles");
+                options.Scope.Add("imagegalleryapi.fullaccess");
                 options.ClaimActions.MapJsonKey("role", "role");
                 options.TokenValidationParameters = new()
                 {
